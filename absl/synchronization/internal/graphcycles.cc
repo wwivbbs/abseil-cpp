@@ -276,6 +276,11 @@ inline uint32_t NodeVersion(GraphId id) {
   return static_cast<uint32_t>(id.handle >> 32);
 }
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4309)
+#endif
+
 // We need to hide Mutexes (or other deadlock detection's pointers)
 // from the leak detector.  Xor with an arbitrary number with high bits set.
 static const uintptr_t kHideMask = static_cast<uintptr_t>(0xF03A5F7BF03A5F7Bll);
@@ -283,6 +288,11 @@ static const uintptr_t kHideMask = static_cast<uintptr_t>(0xF03A5F7BF03A5F7Bll);
 static inline uintptr_t MaskPtr(void *ptr) {
   return reinterpret_cast<uintptr_t>(ptr) ^ kHideMask;
 }
+
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif  // _MSC_VER
+
 
 static inline void* UnmaskPtr(uintptr_t word) {
   return reinterpret_cast<void*>(word ^ kHideMask);

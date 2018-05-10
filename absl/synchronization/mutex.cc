@@ -272,12 +272,22 @@ static absl::base_internal::SpinLock synch_event_mu(
 // Can't be too small, as it's used for deadlock detection information.
 static const uint32_t kNSynchEvent = 1031;
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4309)
+#endif
+
 // We need to hide Mutexes (or other deadlock detection's pointers)
 // from the leak detector.
 static const uintptr_t kHideMask = static_cast<uintptr_t>(0xF03A5F7BF03A5F7BLL);
 static uintptr_t MaskMu(const void *mu) {
   return reinterpret_cast<uintptr_t>(mu) ^ kHideMask;
 }
+
+
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif  // _MSC_VER
 
 static struct SynchEvent {     // this is a trivial hash table for the events
   // struct is freed when refcount reaches 0
