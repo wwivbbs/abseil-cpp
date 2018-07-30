@@ -277,20 +277,6 @@ inline uint32_t NodeVersion(GraphId id) {
   return static_cast<uint32_t>(id.handle >> 32);
 }
 
-
-// We need to hide Mutexes (or other deadlock detection's pointers)
-// from the leak detector.  Xor with an arbitrary number with high bits set.
-static const uintptr_t kHideMask = static_cast<uintptr_t>(0xF03A5F7BF03A5F7Bll);
-
-static inline uintptr_t MaskPtr(void *ptr) {
-  return reinterpret_cast<uintptr_t>(ptr) ^ kHideMask;
-}
-
-
-static inline void* UnmaskPtr(uintptr_t word) {
-  return reinterpret_cast<void*>(word ^ kHideMask);
-}
-
 struct Node {
   int32_t rank;               // rank number assigned by Pearce-Kelly algorithm
   uint32_t version;           // Current version number
