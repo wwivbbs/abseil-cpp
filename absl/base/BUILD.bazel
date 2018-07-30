@@ -102,6 +102,7 @@ cc_library(
 cc_library(
     name = "base_internal",
     hdrs = [
+        "internal/hide_ptr.h",
         "internal/identity.h",
         "internal/inline_variable.h",
         "internal/invoke.h",
@@ -361,6 +362,7 @@ cc_test(
     copts = ABSL_TEST_COPTS,
     deps = [
         ":base",
+        "//absl/strings",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -386,6 +388,7 @@ cc_test(
         "//absl:windows": [],
         "//conditions:default": ["-pthread"],
     }),
+    tags = ["no_test_ios_x86_64"],
     deps = [":malloc_internal"],
 )
 
@@ -406,15 +409,15 @@ cc_test(
     ],
 )
 
-cc_binary(
+cc_test(
     name = "thread_identity_benchmark",
-    testonly = 1,
     srcs = ["internal/thread_identity_benchmark.cc"],
     copts = ABSL_TEST_COPTS,
+    tags = ["benchmark"],
     visibility = ["//visibility:private"],
     deps = [
         ":base",
         "//absl/synchronization",
-        "@com_github_google_benchmark//:benchmark",
+        "@com_github_google_benchmark//:benchmark_main",
     ],
 )

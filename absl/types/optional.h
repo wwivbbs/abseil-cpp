@@ -48,7 +48,7 @@ using std::optional;
 using std::make_optional;
 using std::nullopt_t;
 using std::nullopt;
-}
+}  // namespace absl
 
 #else  // ABSL_HAVE_STD_OPTIONAL
 
@@ -776,10 +776,13 @@ class optional : private optional_internal::optional_data<T>,
   // `optional` is empty, behavior is undefined.
   //
   // If you need myOpt->foo in constexpr, use (*myOpt).foo instead.
-  const T* operator->() const { return this->pointer(); }
+  const T* operator->() const {
+    assert(this->engaged_);
+    return std::addressof(this->data_);
+  }
   T* operator->() {
     assert(this->engaged_);
-    return this->pointer();
+    return std::addressof(this->data_);
   }
 
   // optional::operator*()
@@ -817,6 +820,12 @@ class optional : private optional_internal::optional_data<T>,
   // only if `*this` is empty.
   constexpr bool has_value() const noexcept { return this->engaged_; }
 
+// Suppress bogus warning on MSVC: MSVC complains call to reference() after
+// throw_bad_optional_access() is unreachable.
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#endif  // _MSC_VER
   // optional::value()
   //
   // Returns a reference to an `optional`s underlying value. The constness
@@ -845,6 +854,9 @@ class optional : private optional_internal::optional_data<T>,
             ? reference()
             : (optional_internal::throw_bad_optional_access(), reference()));
   }
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif  // _MSC_VER
 
   // optional::value_or()
   //
@@ -871,10 +883,6 @@ class optional : private optional_internal::optional_data<T>,
   }
 
  private:
-  // Private accessors for internal storage viewed as pointer to T.
-  const T* pointer() const { return std::addressof(this->data_); }
-  T* pointer() { return std::addressof(this->data_); }
-
   // Private accessors for internal storage viewed as reference to T.
   constexpr const T& reference() const { return this->data_; }
   T& reference() { return this->data_; }

@@ -36,6 +36,7 @@ list(APPEND BASE_INTERNAL_HEADERS
   "internal/endian.h"
   "internal/exception_testing.h"
   "internal/exception_safety_testing.h"
+  "internal/hide_ptr.h"
   "internal/identity.h"
   "internal/invoke.h"
   "internal/inline_variable.h"
@@ -309,7 +310,7 @@ absl_test(
 
 # test raw_logging_test
 set(RAW_LOGGING_TEST_SRC "raw_logging_test.cc")
-set(RAW_LOGGING_TEST_PUBLIC_LIBRARIES absl::base)
+set(RAW_LOGGING_TEST_PUBLIC_LIBRARIES absl::base absl::strings)
 
 absl_test(
   TARGET

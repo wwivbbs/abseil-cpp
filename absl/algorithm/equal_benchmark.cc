@@ -15,8 +15,8 @@
 #include <cstdint>
 #include <cstring>
 
-#include "absl/algorithm/algorithm.h"
 #include "benchmark/benchmark.h"
+#include "absl/algorithm/algorithm.h"
 
 namespace {
 
@@ -124,5 +124,3 @@ BENCHMARK_TEMPLATE(BM_absl_equal_self_benchmark, EightBits)
     ->Range(kMinBenchmarkSize, kMaxBenchmarkSize);
 
 }  // namespace
-
-BENCHMARK_MAIN();
