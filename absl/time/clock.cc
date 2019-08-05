@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,10 +57,8 @@ Time Now() {
 #endif
 #endif
 
-#if defined(__APPLE__)
-#include "absl/time/internal/get_current_time_ios.inc"
-#elif defined(_WIN32)
-#include "absl/time/internal/get_current_time_windows.inc"
+#if defined(__APPLE__) || defined(_WIN32)
+#include "absl/time/internal/get_current_time_chrono.inc"
 #else
 #include "absl/time/internal/get_current_time_posix.inc"
 #endif
@@ -381,7 +379,7 @@ static uint64_t UpdateLastSample(
 //
 // Manually mark this 'noinline' to minimize stack frame size of the fast
 // path.  Without this, sometimes a compiler may inline this big block of code
-// into the fast past.  That causes lots of register spills and reloads that
+// into the fast path.  That causes lots of register spills and reloads that
 // are unnecessary unless the slow path is taken.
 //
 // TODO(absl-team): Remove this attribute when our compiler is smart enough
